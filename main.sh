@@ -46,7 +46,7 @@ SELECTED=1
 # Build Main menu
 while true
 do
-	MENUCOMMAND="whiptail --title \"Main Menu\" --menu \"Choose an option\" 22 78 16 --default-item $SELECTED $MENUITEMS"
+	MENUCOMMAND="whiptail --title \"My Personal Admin Tools - Main Menu\" --menu \"Choose an option\" 22 78 16 --default-item $SELECTED $MENUITEMS"
 	RET=$(eval $MENUCOMMAND 3>&1 1>&2 2>&3)
 	if [ $RET == "EXIT" ];then
 		break
