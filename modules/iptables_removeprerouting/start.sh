@@ -1,7 +1,7 @@
 #!/bin/bash
 ##############################################################################
 #
-#    MyPATS - My Personal Admin Tools
+#    MyPATS - My Personal Admin System Tools
 #    Copyright (C) 2015 Juan Antonio Nache <ja@nache.net>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,18 @@
 #
 ############################################################################
 
-set -e
+ORIG=$(cd $(dirname "$0")/; pwd)
+. $ORIG/../../config/config.sh
 
-export SUDOCOMMAND="sudo"
+while true
+do
+	clear
+	$SUDOCOMMAND /sbin/iptables -t nat --line-numbers -L
+	printf 'Choose number of line to remove or N to exit: '
+	read -r RET
+        if [ $RET == "N" ];then
+                break
+        fi
+	$SUDOCOMMAND /sbin/iptables -t nat -D PREROUTING $RET
+done
+
