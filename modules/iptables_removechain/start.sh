@@ -26,11 +26,19 @@ while true
 do
 	clear
 	$SUDOCOMMAND /sbin/iptables -t nat --line-numbers -L
+	printf 'Please, select Chain\n'
+	select CHAIN in `$SUDOCOMMAND /sbin/iptables -t nat --line-numbers -L | grep Chain | cut -d" " -f2`;
+	do
+		echo "$CHAIN Selected"
+		break
+	done
+
+	$SUDOCOMMAND /sbin/iptables -t nat --line-numbers -L $CHAIN
 	printf 'Choose number of line to remove or N to exit: '
 	read -r RET
         if [ $RET == "N" ];then
                 break
         fi
-	$SUDOCOMMAND /sbin/iptables -t nat -D PREROUTING $RET
+	$SUDOCOMMAND /sbin/iptables -t nat -D $CHAIN $RET
 done
 
