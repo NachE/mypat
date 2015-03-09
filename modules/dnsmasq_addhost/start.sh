@@ -14,13 +14,16 @@ then
 else
 	printf 'Found a custom hosts file\n'
 	DEFAULTHOSTSFILE=`cat /etc/dnsmasq.conf | grep -v ^# | grep addn-hosts | cut -d"=" -f2`
-	printf 'Using ${DEFAULTHOSTSFILE}\n'
+	printf 'Using %s\n' ${DEFAULTHOSTSFILE}
 fi
 
 
 
 read -p "File where to add host entry [$DEFAULTHOSTSFILE]: " HOSTSFILE
 HOSTSFILE=${HOSTSFILE:-$DEFAULTHOSTSFILE}
+
+printf '\n\n  Actual status of %s:\n' $HOSTSFILE
+$SUDOCOMMAND cat $HOSTSFILE
 
 
 
@@ -32,7 +35,7 @@ printf 'Hostname: '
 read -r HOSTNAME
 
 echo -e "${IP}\t${HOSTNAME}" | $SUDOCOMMAND tee --append $HOSTSFILE
-printf '\n\n  Printing file:\n'
+printf '\n\nFinal status of %s. Printing file:\n' $HOSTSFILE
 $SUDOCOMMAND cat $HOSTSFILE
 
 while true
