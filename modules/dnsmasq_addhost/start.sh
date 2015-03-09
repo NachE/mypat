@@ -28,10 +28,10 @@ $SUDOCOMMAND cat $HOSTSFILE
 
 
 
-printf 'IP: '
+printf '\nEnter new IP: '
 read -r IP
 
-printf 'Hostname: '
+printf 'Enter a hostname: '
 read -r HOSTNAME
 
 echo -e "${IP}\t${HOSTNAME}" | $SUDOCOMMAND tee --append $HOSTSFILE
