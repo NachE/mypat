@@ -20,8 +20,9 @@ done
 while true
 do
 	virsh -c qemu:///system net-list
-	printf '\nPlease, enter the network name you want to edit: '
-	read -r NETNAME
+	DEFVAL="default"
+	read -p "Please, enter the network name you want to edit [$DEFVAL]: " NETNAME
+	NETNAME=${NETNAME:-$DEFVAL}
 	virsh -c qemu:///system net-info $NETNAME || NETEXIST="NO"
 	if [ "$NETEXIST" == "NO" ];
 	then

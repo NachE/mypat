@@ -49,11 +49,13 @@ do
 	fi
 done
 
-printf 'Amount of ram (e.g. 1024): '
-read -r RAMSIZE
+DEFVAL=1024
+read -p "Amount of ram [$DEFVAL]: " RAMSIZE
+RAMSIZE=${RAMSIZE:-$DEFVAL}
 
-printf 'Number of CPUs: '
-read -r CPUNUM
+DEFVAL=1
+read -p "Number of CPUs [$DEFVAL]: " CPUNUM
+CPUNUM=${CPUNUM:-$DEFVAL}
 
 virt-install --os-variant list
 printf 'OS Variant: '
