@@ -49,7 +49,8 @@ DEFVAL=1234
 read -p "Port to listen [$DEFVAL]: " LISTENPORT
 LISTENPORT=${LISTENPORT:-$DEFVAL}
 
-DEFVAL="localhost"
+printf '\nNote: If you experiment 404 errors, try to use IP instead HOST on this parameter\n'
+DEFVAL="127.0.0.1"
 read -p "Destination IP or HOST (without http://): [$DEFVAL]: " DESTIP
 DESTIP=${DESTIP:-$DEFVAL}
 
@@ -66,8 +67,8 @@ echo -e "server {\n\
 \tserver_name _;\n
 \troot   /dev/null;\n\
 \tlocation / {\n\
-\t\tproxy_pass       http://$DESTIP:$DESTPORT;\n\
 \t\tproxy_set_header Host      $FAKEHOST;\n\
+\t\tproxy_pass       http://$DESTIP:$DESTPORT/;\n\
 \t\tproxy_set_header X-Real-IP \$remote_addr;\n\
 \t}\n\
 }" | $SUDOCOMMAND tee /etc/nginx/sites-available/mypats-$SITENAME.vhost
