@@ -49,7 +49,15 @@ DEFVAL=1234
 read -p "Port to listen [$DEFVAL]: " LISTENPORT
 LISTENPORT=${LISTENPORT:-$DEFVAL}
 
-printf '\nNote: If you experiment 404 errors, try to use IP instead HOST on this parameter\n'
+printf '\nNote: If you experiment 404 errors,\n'
+printf 'try to use IP instead HOST on this parameter.\n'
+printf 'Remember that you will set a proxy_set_header Host\n'
+printf "parameter with this tool, so you don't need to set\n"
+printf 'hostname here. This is specially problematic if you\n'
+printf 'use a differente hostname here and with proxy_set_header Host.\n'
+printf 'If you are thinking to use "localhost" here, maybe\n'
+printf 'its better option to use "127.0.0.1" or a public/lan ip\n'
+
 DEFVAL="127.0.0.1"
 read -p "Destination IP or HOST (without http://): [$DEFVAL]: " DESTIP
 DESTIP=${DESTIP:-$DEFVAL}
@@ -58,6 +66,7 @@ DEFVAL="80"
 read -p "Destination port: [$DEFVAL]: " DESTPORT
 DESTPORT=${DESTPORT:-$DEFVAL}
 
+printf '\nNote: Use domain without http:// and without www.\n'
 DEFVAL="fakehost.com"
 read -p "Custom/Fake 'Host' request header to send [$DEFVAL]: " FAKEHOST
 FAKEHOST=${FAKEHOST:-$DEFVAL}
@@ -69,6 +78,8 @@ echo -e "server {\n\
 \tlocation / {\n\
 \t\tproxy_set_header Host      $FAKEHOST;\n\
 \t\tproxy_pass       http://$DESTIP:$DESTPORT/;\n\
+\t\tproxy_redirect http://$FAKEHOST/ /;\n\
+\t\tproxy_redirect http://www.$FAKEHOST/ /;\n\
 \t\tproxy_set_header X-Real-IP \$remote_addr;\n\
 \t}\n\
 }" | $SUDOCOMMAND tee /etc/nginx/sites-available/mypats-$SITENAME.vhost
