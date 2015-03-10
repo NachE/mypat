@@ -51,7 +51,7 @@ do
 	fi
 done
 
-MACADDR=`virsh -c qemu:///system dumpxml  Windows7 | grep 'mac address' | cut -d"'" -f2`
+MACADDR=`virsh -c qemu:///system dumpxml $VMNAME | grep 'mac address' | cut -d"'" -f2`
 
 printf 'Now a editor will be opened\n'
 printf 'Put the following line inside <dhcp></dhcp> tags\n\n'
