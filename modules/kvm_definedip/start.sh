@@ -51,11 +51,14 @@ do
 	fi
 done
 
+
 MACADDR=`virsh -c qemu:///system dumpxml $VMNAME | grep 'mac address' | cut -d"'" -f2`
+
+/usr/sbin/arp -n | grep --color -E "^|$MACADDR"
 
 printf 'Now a editor will be opened\n'
 printf 'Put the following line inside <dhcp></dhcp> tags\n\n'
-printf "    <host mac='$MACADDR' name='$VMNAME' ip='YOUR-IP-ADDR'/>\n\n"
+printf "    <host mac='$MACADDR' name='$VMNAME' ip='YOUR-CUSTOM-IP-ADDR'/>\n\n"
 read -p "Press any key to continue..."
 
 virsh -c qemu:///system net-edit $NETNAME
