@@ -56,9 +56,13 @@ MACADDR=`virsh -c qemu:///system dumpxml $VMNAME | grep 'mac address' | cut -d"'
 
 /usr/sbin/arp -n | grep --color -E "^|$MACADDR"
 
+DEFCURRENTIP="YOUR-CUSTOM-IP-ADDR"
+CURRENTIP=`/usr/sbin/arp -n | grep $MACADDR | cut -d" " -f1`
+CURRENTIP=${CURRENTIP:-$DEFCURRENTIP}
+
 printf 'Now a editor will be opened\n'
 printf 'Put the following line inside <dhcp></dhcp> tags\n\n'
-printf "    <host mac='$MACADDR' name='$VMNAME' ip='YOUR-CUSTOM-IP-ADDR'/>\n\n"
+printf "    <host mac='$MACADDR' name='$VMNAME' ip='$CURRENTIP'/>\n\n"
 read -p "Press any key to continue..."
 
 virsh -c qemu:///system net-edit $NETNAME
