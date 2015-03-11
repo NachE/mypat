@@ -39,7 +39,7 @@ do
 		
 		printf 'Size of image in GB: (for example, 5): '
 		read -r QCOW_SIZE
-		qemu-img create -f qcow2 -o preallocation=metadata $QCOW_FILE ${QCOW_SIZE}G
+		$SUDOCOMMAND qemu-img create -f qcow2 -o preallocation=metadata $QCOW_FILE ${QCOW_SIZE}G
 		if [ $? -gt 0 ];
 		then
 			printf 'ERROR!!!'
@@ -83,6 +83,17 @@ read -r OSVARIANT
 printf 'Name of this VM: '
 read -r VMNAME
 
+DEFVAL="YES"
+read -p "Use virtio for network and disk? [$DEFVAL]: " USEVIRTIO
+USEVIRTIO=${USEVIRTIO:-$DEFVAL}
+if [ "$USEVIRTIO" == "YES" ];
+then
+	VIRTIODISK=",bus=virtio"
+	VIRTIONET="virtio"
+else
+	VIRTIODISK=""
+	VIRTIONET="rtl8139"
+fi
 
 echo "Now we exec this command: "
 echo "virt-install \
@@ -90,9 +101,9 @@ echo "virt-install \
         --name $VMNAME \
         --ram $RAMSIZE \
         --vcpus $CPUNUM \
-        --disk path=$QCOF_FILE,format=qcow2,bus=virtio,cache=writeback,size=${QCOW_SIZE} \
+        --disk path=$QCOW_FILE,format=qcow2$VIRTIODISK,cache=writeback,size=${QCOW_SIZE} \
         --cdrom $ISOFILE \
-        --network=bridge:virbr0,model=virtio \
+        --network=bridge:virbr0,model=$VIRTIONET \
         --vnc \
         --noautoconsole \
         --hvm \
@@ -104,15 +115,14 @@ virt-install \
         --name $VMNAME \
         --ram $RAMSIZE \
         --vcpus $CPUNUM \
-        --disk path=$QCOF_FILE,format=qcow2,bus=virtio,cache=writeback,size=${QCOW_SIZE} \
+        --disk path=$QCOW_FILE,format=qcow2$VIRTIODISK,cache=writeback,size=${QCOW_SIZE} \
         --cdrom $ISOFILE \
-        --network=bridge:virbr0,model=virtio \
+        --network=bridge:virbr0,model=$VIRTIONET \
         --vnc \
         --noautoconsole \
         --hvm \
         --accelerate \
         --os-variant $OSVARIANT
-
 
 read -p "Press a key to continue..."
 
