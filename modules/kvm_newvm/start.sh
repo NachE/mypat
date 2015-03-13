@@ -91,7 +91,7 @@ then
 	VIRTIODISK=",bus=virtio"
 	VIRTIONET="virtio"
 else
-	VIRTIODISK=""
+	VIRTIODISK=",bus=virtio"
 	VIRTIONET="rtl8139"
 fi
 
