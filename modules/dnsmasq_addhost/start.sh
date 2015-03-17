@@ -24,7 +24,7 @@ ORIG=$(cd $(dirname "$0")/; pwd)
 
 
 
-cat /etc/dnsmasq.conf | grep -v ^# | grep addn-hosts || FOUNDHOSTS="NO"
+cat /etc/dnsmasq.conf | grep -v ^# | grep addn-hosts | tail -n 1 || FOUNDHOSTS="NO"
 if [ "$FOUNDHOSTS" == "NO" ];
 then
 	printf 'NO custom hosts file found on dnsmas conf\n'
@@ -32,7 +32,7 @@ then
 	DEFAULTHOSTSFILE="/etc/hosts"
 else
 	printf 'Found a custom hosts file\n'
-	DEFAULTHOSTSFILE=`cat /etc/dnsmasq.conf | grep -v ^# | grep addn-hosts | cut -d"=" -f2`
+	DEFAULTHOSTSFILE=`cat /etc/dnsmasq.conf | grep -v ^# | grep addn-hosts | head -n 1 | cut -d"=" -f2`
 	printf 'Using %s\n' ${DEFAULTHOSTSFILE}
 fi
 
